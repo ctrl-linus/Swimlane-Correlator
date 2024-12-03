@@ -16,19 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === 'updateMultiEntryBox') {
             // Append the received text to the multi-entry box
-            if(!multiEntryBox.value.includes(message.text)) {
-                multiEntryBox.value += message.text + '\n';
-                // Save the updated content to localStorage
-                localStorage.setItem('multiEntryContent', multiEntryBox.value);
-                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: 'showNotification', text: 'Case ID Copied!', severity: 'success' })
-                });
-            }
-            else {
-                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: 'showNotification', text: 'Case ID Already Copied!', severity: 'warning' })
-                });
-            }
+            multiEntryBox.value += message.text + '\n';
+	    
+
+            // Save the updated content to localStorage
+            localStorage.setItem('multiEntryContent', multiEntryBox.value);
         }
     });
 
@@ -36,8 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === 'clearData') {
             multiEntryBox.value = '';
+
 	    // Save the updated content to localStorage
             localStorage.setItem('multiEntryContent', multiEntryBox.value);
+
         }
     });
 
@@ -56,4 +50,5 @@ document.addEventListener('DOMContentLoaded', () => {
           chrome.tabs.sendMessage(tabs[0].id, { action: 'pasteContents', text: multiEntryBox.value });
        });
     });
+
 });
